@@ -7,9 +7,11 @@ model = load_model('model.h5')
 
 def preprocess_input_predict(base64_image):
     decoded_img = base64.b64decode((base64_image))
-    img = Image.open(io.BytesIO(decoded_img))
-    np_img = [np.array(img)]
+    img_rgb = Image.open(io.BytesIO(decoded_img))
+    img_gray = img_rgb.convert('L').resize((48,48))
+    np_img = [np.array(img_gray)]
     np_img = np.array(np_img)
+    print(np_img.shape)
     np_img = np_img.reshape(np_img.shape[0],48, 48, 1)
     np_img = np_img / 255.0
     return np_img
