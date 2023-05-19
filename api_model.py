@@ -12,10 +12,13 @@ app = FastAPI()
 def read_root():
     return {"error":"False", "message":"Welcome to the API"}
 
-@app.post("/predict", status_code=200)
+@app.post("/predict-image", status_code=200)
 def predic_image(data: ImageBody):
     try:    
         prediction = model_helper.predict_image(data.base64_image)
-        return {"error":"False", "message":"Prediction successful", "response":prediction.tolist()}
-    except:
+        prediction = prediction.tolist()
+        data_response  = {"angry": prediction[0][0], "fear": prediction[0][1], "happy": prediction[0][2], "sad": prediction[0][3], "surprise": prediction[0][4]}
+        return {"error":"False", "message":"Prediction successful", "response":data_response}
+    except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
