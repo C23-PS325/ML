@@ -1,8 +1,11 @@
 import io, base64, os
 import cv2
 import numpy as np
+import tqdm
+from datetime import timedelta
 from PIL import Image
 from keras.models import load_model
+from io import BytesIO
 
 model = load_model('model.h5')
 
@@ -31,6 +34,9 @@ def preprocess_crop_face(img_rgb, img_gray):
         roi_rgb = img_rgb[y:y+h, x:x+w]
         cv2.rectangle(img_rgb, (x, y), (x+w, y+h), (255, 0, 0), 2)
         facess = faceCascade.detectMultiScale(roi_gray)
+        # if len(facess) == 0:
+        #     return 
+        # else:
         for (ex, ey, ew, eh) in facess:
             face_roi = roi_rgb[ey: ey+eh, ex:ex + ew]
     return face_roi
@@ -43,12 +49,11 @@ def predict_image(base64_image):
 def extract_frames(video):
     SAVING_FRAMES_PER_SECOND = 30
     raw_filename, _ = os.path.splitext(video)
-    raw_filename = raw_filename.split('/')[-1]
     filename =  "extracted_frames/" + raw_filename + "_frames"
-
+    # make a folder by the name of the video file
     if not os.path.isdir(filename):
         os.mkdir(filename)
-
+    # read the video file    
     capture_video = cv2.VideoCapture(video)
     fps = capture_video.get(cv2.CAP_PROP_FPS)
     curr_frame = 0
@@ -91,3 +96,7 @@ def predict_video(video):
     frames_folder = extract_frames(video)
     total_predictions = predict_all_frames(frames_folder)
     return total_predictions
+
+if __name__ == "__main__":
+    video = "test.mp4"
+    print(predict_video(video))
