@@ -88,17 +88,6 @@ def predict_all_frames(path):
     
     return total_predictions
 
-def predict_video(video):
-    frames_folder = extract_frames(video)
-    frames_prediction = predict_all_frames(frames_folder)
-    extracted_audio = extract_audio_from_video(video, "extracted_audio")
-    audio_prediction = predict_sound(extracted_audio)
-    total_predictions = dict()
-    total_predictions["frames"] = frames_prediction
-    total_predictions["audio"] = audio_prediction
-    print(total_predictions)
-    return total_predictions
-
 def extract_audio_from_video(video_path, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     video = VideoFileClip(video_path)
@@ -125,3 +114,13 @@ def predict_sound(filename):
     result = prediction.argmax()
     expression = prediction_dict[prediction[0][result]]
     return expression
+
+def predict_video(video):
+    frames_folder = extract_frames(video)
+    frames_prediction = predict_all_frames(frames_folder)
+    extracted_audio = extract_audio_from_video(video, "extracted_audio")
+    audio_prediction = predict_sound(extracted_audio)
+    total_predictions = dict()
+    total_predictions["frames"] = frames_prediction
+    total_predictions["audio"] = audio_prediction
+    return total_predictions
