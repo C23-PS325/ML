@@ -36,7 +36,7 @@ async def upload_video(file_video : UploadFile = File(...)):
             
             result = model_helper.predict_video(path_video)
         
-        return {"error":"False", "message":"Upload video successful", "response":result}
+        return {"error":"False", "message":"Prediction success", "response":result}
     except Exception as e:
         print(e.with_traceback())
         raise HTTPException(status_code=500, detail="Internal Server Error")

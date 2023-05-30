@@ -1,11 +1,11 @@
-import io, base64, os
-import cv2
+import io, base64, os, cv2, librosa
 import numpy as np
 from PIL import Image
 from keras.models import load_model
 from moviepy.editor import VideoFileClip
 
-model = load_model('model.h5')
+model_gambar = load_model('model/model_gambar.h5')
+model_suara = load_model('model/model_suara.h5')
 
 def preprocess_image(base64_image):
     decoded_img = base64.b64decode((base64_image))
@@ -38,7 +38,7 @@ def preprocess_crop_face(img_rgb, img_gray):
 
 def predict_image(base64_image):
     np_img = preprocess_image(base64_image)
-    prediction = model.predict(np_img)
+    prediction = model_gambar.predict(np_img)
     return prediction
 
 def extract_frames(video):
@@ -90,7 +90,13 @@ def predict_all_frames(path):
 
 def predict_video(video):
     frames_folder = extract_frames(video)
-    total_predictions = predict_all_frames(frames_folder)
+    frames_prediction = predict_all_frames(frames_folder)
+    extracted_audio = extract_audio_from_video(video, "extracted_audio")
+    audio_prediction = predict_sound(extracted_audio)
+    total_predictions = dict()
+    total_predictions["frames"] = frames_prediction
+    total_predictions["audio"] = audio_prediction
+    print(total_predictions)
     return total_predictions
 
 def extract_audio_from_video(video_path, output_dir):
@@ -103,3 +109,19 @@ def extract_audio_from_video(video_path, output_dir):
     audio.close()
     video.close()
     return output_path
+
+def extract_mfcc(filename):
+    audio, sample_rate = librosa.load(filename, duration=3, offset=0.5)
+    mfcss = np.mean(librosa.feature.mfcc(y=audio, sr=sample_rate, n_mfcc=40).T,axis=0)
+    return mfcss
+
+def predict_sound(filename):
+    mfcc = extract_mfcc(filename)
+    mfcc = np.expand_dims(mfcc, axis=0)
+    mfcc = np.expand_dims(mfcc, axis=2)
+    prediction = model_suara.predict(mfcc)
+    list_prediction = prediction.tolist()
+    prediction_dict  = {list_prediction[0][0] : "angry", list_prediction[0][1] : "disgust", list_prediction[0][2] : "fear", list_prediction[0][3] : "happy", list_prediction[0][4] : "natural", list_prediction[0][5] : "surprise", list_prediction[0][6] : "sad"}
+    result = prediction.argmax()
+    expression = prediction_dict[prediction[0][result]]
+    return expression
