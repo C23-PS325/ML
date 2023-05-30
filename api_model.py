@@ -1,12 +1,14 @@
 from typing import Optional
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile
 import api_function as model_helper
 from pydantic import BaseModel
+import uuid
 
 class ImageBody(BaseModel):
     base64_image: str
 
 app = FastAPI()
+VIDEO_DIR = "uploaded_videos/"
 
 @app.get("/")
 def read_root():
@@ -22,3 +24,21 @@ def predic_image(data: ImageBody):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+@app.post("/predict-video", status_code=200)
+async def upload_video(file_video : UploadFile = File(...)):
+    try:
+        file_video.filename = f"{uuid.uuid4()}.mp4"
+        video_content = await file_video.read()
+        path_video = f"{VIDEO_DIR}{file_video.filename}"
+        with open(path_video, "wb") as fh:
+            fh.write(video_content)
+            
+            result = model_helper.predict_video(path_video)
+        
+        return {"error":"False", "message":"Prediction success", "response":result}
+    except Exception as e:
+        print(e.with_traceback())
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    
+    
