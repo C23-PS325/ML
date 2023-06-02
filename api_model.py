@@ -31,12 +31,12 @@ async def upload_video(file_video : UploadFile = File(...)):
         file_video.filename = f"{uuid.uuid4()}.mp4"
         video_content = await file_video.read()
         path_video = f"{VIDEO_DIR}{file_video.filename}"
-        with open(path_video, "wb") as fh:
-            fh.write(video_content)
+        # with open(path_video, "wb") as fh:
+        #     fh.write(video_content)
             
-            result = model_helper.predict_video(path_video)
+        result = model_helper.predict_video(path_video)
         
-        return {"error":"False", "message":"Prediction success", "response":result}
+        return {"error":"false", "message":"Prediction success", "response":result}
     except Exception as e:
         print(e.with_traceback())
         raise HTTPException(status_code=500, detail="Internal Server Error")

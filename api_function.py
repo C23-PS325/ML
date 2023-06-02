@@ -6,6 +6,9 @@ from moviepy.editor import VideoFileClip
 
 model_gambar = load_model('model/model_gambar.h5')
 model_suara = load_model('model/model_suara.h5')
+uploaded_video_path = ""
+extract_frames_path = ""
+extract_audio_path = ""
 
 def preprocess_image(base64_image):
     decoded_img = base64.b64decode((base64_image))
@@ -46,7 +49,9 @@ def extract_frames(video):
     raw_filename, _ = os.path.splitext(video)
     raw_filename = raw_filename.split('/')[-1]
     filename =  "extracted_frames/" + raw_filename + "_frames"
-
+    global extract_frames_path
+    extract_frames_path = filename
+    
     if not os.path.isdir(filename):
         os.mkdir(filename)
 
@@ -85,8 +90,10 @@ def predict_all_frames(path):
             total_predictions[expression] += 1
         else:
             total_predictions[expression] = 1 
+            
+    final_result = {key: round(((value / len(all_frames)) * 100),2) for key, value in total_predictions.items()}
     
-    return total_predictions
+    return final_result
 
 def extract_audio_from_video(video_path, output_dir):
     os.makedirs(output_dir, exist_ok=True)
@@ -94,6 +101,8 @@ def extract_audio_from_video(video_path, output_dir):
     audio = video.audio
     filename = os.path.splitext(os.path.basename(video_path))[0]
     output_path = os.path.join(output_dir, f"{filename}.wav")
+    global extract_audio_path
+    extract_audio_path = output_path
     audio.write_audiofile(output_path, codec='pcm_s16le')
     audio.close()
     video.close()
@@ -123,4 +132,7 @@ def predict_video(video):
     total_predictions = dict()
     total_predictions["frames"] = frames_prediction
     total_predictions["audio"] = audio_prediction
+    os.remove(video)
+    os.removedirs(extract_frames_path)
+    os.remove(extract_audio_path)
     return total_predictions
