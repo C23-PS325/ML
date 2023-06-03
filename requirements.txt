@@ -6,3 +6,4 @@ keras==2.12.0
 opencv-python==4.7.0.72
 librosa==0.10.0.post2
 moviepy==1.0.3
+fastapi_gcs==0.0.11
