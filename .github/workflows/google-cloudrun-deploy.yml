@@ -76,7 +76,7 @@ jobs:
       # Authenticate Docker to Google Cloud Artifact Registry
       - name: Configure Docker Client
         run: |-
-          "gcloud auth configure-docker ${{ env.GAR_URL }} --quiet"
+          "gcloud auth configure-docker ${{ env.GAR_URL }}"
       - name: Build and Push Container
         run: |-
           docker build -t "${{ env.GAR_URL }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest" ./
