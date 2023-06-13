@@ -74,17 +74,18 @@ jobs:
           export_default_credentials: true
 
       # Authenticate Docker to Google Cloud Artifact Registry
+      #LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE
       - name: Configure Docker Client
         run: |-
           gcloud auth configure-docker ${{ env.GAR_URL }}
       - name: Build and Push Container
         run: |-
-          docker build -t ${{ env.GAR_URL }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:latest ./
-          docker build -t ${{ env.GAR_URL }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:${{ github.sha }} ./
-          docker push ${{ env.GAR_URL }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:latest
-          docker push ${{ env.GAR_URL }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:${{ github.sha }}
+          docker build -t ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:latest ./
+          docker build -t ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:${{ github.sha }} ./
+          docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:latest
+          docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ IMAGE_NAME }}:${{ github.sha }}
           
-          LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE
+          
 
       # END - Docker auth and build
 
@@ -95,7 +96,7 @@ jobs:
           service: ${{ env.SERVICE }}
           region: ${{ env.REGION }}
           # NOTE: If using a pre-built image, update the image name here
-          image: ${{ env.GAR_URL }}/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
+          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}:latest
 
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
