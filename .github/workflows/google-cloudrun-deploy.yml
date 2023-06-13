@@ -46,7 +46,7 @@ name: Build and Deploy to Cloud Run
 
 on:
   push:
-    branches: [ "api-upload" ]
+    branches: [ "deploy-to-cloudrun" ]
 
 #env:
 #  PROJECT_ID: YOUR_PROJECT_ID # TODO: update Google Cloud project id
