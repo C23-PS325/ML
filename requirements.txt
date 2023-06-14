@@ -3,3 +3,12 @@ uvicorn==0.22.0
 numpy==1.23.5
 pandas==2.0.1
 keras==2.12.0
+opencv-python==4.7.0.72
+librosa==0.10.0.post2
+moviepy==1.0.3
+fast-api-gcs==0.0.11
+tensorflow==2.12.0
+pydantic==1.10.7
+google-cloud-storage==2.9.0
+python-multipart==0.0.6
+hypercorn==0.14.3
