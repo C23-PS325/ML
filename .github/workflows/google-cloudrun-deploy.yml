@@ -77,9 +77,9 @@ jobs:
 
       # Authenticate Docker to Google Cloud Artifact Registry
       #LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE
-      - name: Configure Docker Client
-        run: |-
-          gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+      # - name: Configure Docker Client
+      #   run: |-
+      #     gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
           
       # Docker Container Image Name uploaded to Artifact Registry
       #LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE
@@ -101,7 +101,8 @@ jobs:
         with:
           push: true
           tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:latest
-#          tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:{{ github.sha }}
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Deploy to Cloud Run
         id: deploy
