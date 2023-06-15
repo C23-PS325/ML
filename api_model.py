@@ -10,7 +10,7 @@ class ImageBody(BaseModel):
     base64_image: str
 
 app = FastAPI()
-credential_path = "/.service-account.json"
+credential_path = "./service-account.json""
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
 google_project_id = "communicare-staging"
 google_bucket_name = "communicare-proc-dev"
