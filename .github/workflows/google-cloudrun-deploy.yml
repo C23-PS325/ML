@@ -78,7 +78,7 @@ jobs:
       - name: Injecting service account in Docker image
         env:
           SERVICE_ACCOUNT: ${{ secrets.DOCKER_SERVICE_ACCOUNT }}
-        run: cat $SERVICE_ACCOUNT > service-account.json
+        run: echo $SERVICE_ACCOUNT >> service-account.json
 
       - name: Build and push docker image
         run: |-
