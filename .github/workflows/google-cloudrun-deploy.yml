@@ -103,10 +103,11 @@ jobs:
           password: ${{ secrets.GOOGLE_CREDENTIALS }}
 
       - name: Build and push docker image
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:latest
+        run: |-
+        docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:${{ github.sha }}" ./
+        docker tag "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:${{ github.sha }}" "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:latest"
+        docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:${{ github.sha }}"
+        docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_REPO }}:latest"
 
       - name: Deploy to Cloud Run
         id: deploy
