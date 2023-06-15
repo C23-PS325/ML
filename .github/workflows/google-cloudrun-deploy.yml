@@ -88,10 +88,10 @@ jobs:
           SERVICE: ${{ env.SERVICE }}
         run: |-
           IMAGE_TAG=$(echo $SHA | cut -c1-7)
-          docker build -t "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$SERVICE:latest" ./
-          docker build -t "${GAR_LOCATION}-docker.pkg.dev/$PROJECT_ID/$SERVICE:$IMAGE_TAG" ./
-          docker push "${GAR_LOCATION}-docker.pkg.dev/$PROJECT_ID/$SERVICE:latest"
-          docker push "${GAR_LOCATION}-docker.pkg.dev/$PROJECT_ID/$SERVICE:$IMAGE_TAG"
+          docker build -t "${GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE}:latest" ./
+          docker build -t "${GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE}:$IMAGE_TAG" ./
+          docker push "${GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE}:latest"
+          docker push "${GAR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${SERVICE}:$IMAGE_TAG"
           
       # END - Docker auth and build
 
