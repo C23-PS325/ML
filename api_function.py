@@ -12,7 +12,7 @@ class APIHelper:
         self.model_gambar = load_model('model/model_gambar.h5')
         self.model_suara = load_model('model/model_suara.h5')
         self.blob_path = ""
-        credential_path = "D:\Kuliah\Semester6\Bangkit\Capstone\communicare-gcs.json"
+        credential_path = "./service-account.json"
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credential_path
         self.google_project_id = "communicare-staging"
         self.google_bucket_name = "communicare-proc-dev"
